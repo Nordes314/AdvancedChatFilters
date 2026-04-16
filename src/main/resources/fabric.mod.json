@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "advancedchatfilters",
+  "version": "${version}",
+  "name": "AdvancedChatFilters",
+  "description": "Filters for AdvancedChat",
+  "authors": [
+    "DarkKronicle",
+    "EnricoMessall"
+  ],
+  "contact": {
+    "homepage": "https://arematics.com",
+    "sources": "https://github.com/Arematics/AdvancedChatFilters",
+    "issues": "https://github.com/Arematics/AdvancedChatFilters/issues"
+  },
+  "license": "MPL-v2",
+  "icon": "assets/advancedchatfilters/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "io.github.darkkronicle.advancedchatfilters.AdvancedChatFilters"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "fabric": "*",
+    "minecraft": "1.21.11",
+    "malilib": ">=0.27.8",
+    "advancedchatcore": ">=1.21.11-1.5.17-alpha.1"
+  },
+  "custom": {
+    "acmodule": true,
+    "modmenu": {
+      "parent": {
+        "id": "advancedchatcore"
+      }
+    }
+  }
+}
