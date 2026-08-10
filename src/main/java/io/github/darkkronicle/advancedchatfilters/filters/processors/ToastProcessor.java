@@ -24,12 +24,12 @@ import io.github.darkkronicle.advancedchatcore.interfaces.IJsonApplier;
 import io.github.darkkronicle.advancedchatcore.interfaces.IMatchProcessor;
 import io.github.darkkronicle.advancedchatcore.interfaces.IScreenSupplier;
 import io.github.darkkronicle.advancedchatcore.util.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -46,22 +46,22 @@ public class ToastProcessor implements IMatchProcessor, IScreenSupplier, IJsonAp
         @Override
         public io.github.darkkronicle.Konstruct.parser.Result parse(ParseContext context, List<Node> input) {
             io.github.darkkronicle.Konstruct.parser.Result r1 = Function.parseArgument(context, input, 0);
-            Text titleText = StyleFormatter.formatText(Text.literal(r1.getContent().getString()));
-            Text descriptionText = null;
+            Component titleText = StyleFormatter.formatText(Component.literal(r1.getContent().getString()));
+            Component descriptionText = null;
             boolean instant = false;
             if (input.size() > 1) {
                 io.github.darkkronicle.Konstruct.parser.Result r2 = Function.parseArgument(context, input, 1);
-                descriptionText = StyleFormatter.formatText(Text.literal(r2.getContent().getString()));
+                descriptionText = StyleFormatter.formatText(Component.literal(r2.getContent().getString()));
             }
             if (input.size() > 2) {
                 io.github.darkkronicle.Konstruct.parser.Result r3 = Function.parseArgument(context, input, 2);
                 instant = r3.getContent().getBoolean();
             }
-            ToastManager manager = MinecraftClient.getInstance().getToastManager();
+            ToastManager manager = Minecraft.getInstance().gui.toastManager();
             if (instant) {
-                SystemToast.show(manager, SystemToast.Type.PERIODIC_NOTIFICATION, titleText, descriptionText);
+                SystemToast.addOrUpdate(manager, SystemToast.SystemToastId.PERIODIC_NOTIFICATION, titleText, descriptionText);
             } else {
-                SystemToast.add(manager, SystemToast.Type.PERIODIC_NOTIFICATION, titleText, descriptionText);
+                SystemToast.add(manager, SystemToast.SystemToastId.PERIODIC_NOTIFICATION, titleText, descriptionText);
             }
             return io.github.darkkronicle.Konstruct.parser.Result.success(new NullObject());
         }
@@ -87,19 +87,19 @@ public class ToastProcessor implements IMatchProcessor, IScreenSupplier, IJsonAp
                     new ConfigString(translate("description"), "", translate("info.description")));
 
     @Override
-    public Result processMatches(Text text, Text unfiltered, SearchResult search) {
-        Text titleText = text;
+    public Result processMatches(Component text, Component unfiltered, SearchResult search) {
+        Component titleText = text;
         if (!title.config.getStringValue().isEmpty()) {
             String content = search.getGroupReplacements(title.config.getStringValue(), 0);
-            titleText = StyleFormatter.formatText(Text.literal(content));
+            titleText = StyleFormatter.formatText(Component.literal(content));
         }
-        Text descriptionText = null;
+        Component descriptionText = null;
         if (!description.config.getStringValue().isEmpty() && !title.config.getStringValue().isEmpty()) {
             String content = search.getGroupReplacements(description.config.getStringValue(), 0);
-            descriptionText = StyleFormatter.formatText(Text.literal(content));
+            descriptionText = StyleFormatter.formatText(Component.literal(content));
         }
-        ToastManager manager = MinecraftClient.getInstance().getToastManager();
-        SystemToast.add(manager, SystemToast.Type.PERIODIC_NOTIFICATION, titleText, descriptionText);
+        ToastManager manager = Minecraft.getInstance().gui.toastManager();
+        SystemToast.add(manager, SystemToast.SystemToastId.PERIODIC_NOTIFICATION, titleText, descriptionText);
         return Result.getFromBool(true);
     }
 
@@ -132,9 +132,9 @@ public class ToastProcessor implements IMatchProcessor, IScreenSupplier, IJsonAp
         private GuiTextFieldGeneric descriptionField;
 
         @Override
-        public void close() {
+        public void onClose() {
             save();
-            super.close();
+            super.onClose();
         }
 
         public SenderScreen(Screen parent) {
@@ -149,8 +149,8 @@ public class ToastProcessor implements IMatchProcessor, IScreenSupplier, IJsonAp
         }
 
         public void save() {
-            ToastProcessor.this.title.config.setValueFromString(titleField.getText());
-            description.config.setValueFromString(descriptionField.getText());
+            ToastProcessor.this.title.config.setValueFromString(titleField.getValue());
+            description.config.setValueFromString(descriptionField.getValue());
         }
 
         private int getWidth() {
@@ -166,15 +166,15 @@ public class ToastProcessor implements IMatchProcessor, IScreenSupplier, IJsonAp
             this.addButton(Buttons.BACK.createButton(x, y), new BackButtonListener(this));
             y += 30;
             y += this.addLabel(x, y, ToastProcessor.this.title.config) + 1;
-            titleField = new GuiTextFieldGeneric(x, y, getWidth(), 20, MinecraftClient.getInstance().textRenderer);
+            titleField = new GuiTextFieldGeneric(x, y, getWidth(), 20, Minecraft.getInstance().font);
             titleField.setMaxLength(64000);
-            titleField.setText(ToastProcessor.this.title.config.getStringValue());
+            titleField.setValue(ToastProcessor.this.title.config.getStringValue());
             this.addTextField(titleField, null);
             y += 30;
             y += this.addLabel(x, y, description.config) + 1;
-            descriptionField = new GuiTextFieldGeneric(x, y, getWidth(), 20, MinecraftClient.getInstance().textRenderer);
+            descriptionField = new GuiTextFieldGeneric(x, y, getWidth(), 20, Minecraft.getInstance().font);
             descriptionField.setMaxLength(64000);
-            descriptionField.setText(description.config.getStringValue());
+            descriptionField.setValue(description.config.getStringValue());
             this.addTextField(descriptionField, null);
         }
 

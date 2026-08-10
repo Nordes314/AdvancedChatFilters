@@ -14,7 +14,7 @@ import java.util.Optional;
 import lombok.NonNull;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 /** Filter used to change the background color of a message. */
 @Environment(EnvType.CLIENT)
@@ -28,7 +28,7 @@ public class ColorFilter implements IFilter {
     }
 
     @Override
-    public Optional<Text> filter(ParentFilter filter, Text text, Text unfiltered, SearchResult search) {
+    public Optional<Component> filter(ParentFilter filter, Component text, Component unfiltered, SearchResult search) {
         return Optional.empty();
     }
 

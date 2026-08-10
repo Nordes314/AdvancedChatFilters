@@ -28,12 +28,12 @@ import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
-public class ScriptFilter implements IScript<Text>, Comparable<ScriptFilter> {
+public class ScriptFilter implements IScript<Component>, Comparable<ScriptFilter> {
 
     @Getter @Setter private ScriptContext context;
 
@@ -108,7 +108,7 @@ public class ScriptFilter implements IScript<Text>, Comparable<ScriptFilter> {
      * @throws Exception If script error or functions not found
      */
     @Override
-    public Text execute(NashornSandbox engine, Text input) throws Exception {
+    public Component execute(NashornSandbox engine, Component input) throws Exception {
         engine.eval(script);
         ScriptFilterContext context = new ScriptFilterContext(input);
         Invocable inv = engine.getSandboxedInvocable();

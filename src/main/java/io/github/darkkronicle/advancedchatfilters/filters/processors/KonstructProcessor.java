@@ -15,9 +15,9 @@ import io.github.darkkronicle.advancedchatcore.interfaces.IScreenSupplier;
 import io.github.darkkronicle.advancedchatcore.util.SearchResult;
 import io.github.darkkronicle.advancedchatfilters.AdvancedChatFilters;
 import io.github.darkkronicle.advancedchatfilters.FiltersHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +31,7 @@ public class KonstructProcessor implements IMatchProcessor, IJsonApplier, IScree
     private Node node;
 
     @Override
-    public Result processMatches(Text text, @Nullable Text unfiltered, @Nullable SearchResult search) {
+    public Result processMatches(Component text, @Nullable Component unfiltered, @Nullable SearchResult search) {
         if (node != null) {
             node.parse(FiltersHandler.getInstance().createTextContext(text, search));
         }
@@ -84,15 +84,15 @@ public class KonstructProcessor implements IMatchProcessor, IJsonApplier, IScree
 
         @Override
         public void initGui() {
-            text = new GuiTextFieldGeneric(10, 26, MinecraftClient.getInstance().getWindow().getScaledWidth() - 20, 13, MinecraftClient.getInstance().textRenderer);
+            text = new GuiTextFieldGeneric(10, 26, Minecraft.getInstance().getWindow().getGuiScaledWidth() - 20, 13, Minecraft.getInstance().font);
             text.setMaxLength(64000);
-            text.setText(processor.content.config.getStringValue());
+            text.setValue(processor.content.config.getStringValue());
             addTextField(text, null);
         }
 
         @Override
         public void closeGui(boolean showParent) {
-            processor.content.config.setValueFromString(text.getText());
+            processor.content.config.setValueFromString(text.getValue());
             processor.loadNode();
             super.closeGui(showParent);
         }

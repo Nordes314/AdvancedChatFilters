@@ -18,8 +18,8 @@ import lombok.Getter;
 import lombok.Value;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class ParentFilter {
@@ -28,7 +28,7 @@ public class ParentFilter {
     @AllArgsConstructor
     public static class FilterResult {
 
-        Optional<Text> text;
+        Optional<Component> text;
         Optional<Color> color;
 
         public static FilterResult EMPTY = new FilterResult(Optional.empty(), Optional.empty());
@@ -68,7 +68,7 @@ public class ParentFilter {
         forwardFilters.add(forwardFilter);
     }
 
-    public FilterResult filter(Text text, Text unfiltered) {
+    public FilterResult filter(Component text, Component unfiltered) {
         String searchString;
         String original = text.getString();
         SearchResult search;
@@ -78,7 +78,7 @@ public class ParentFilter {
         }
         Color color = null;
         for (IFilter filter : filters) {
-            Optional<Text> newtext = filter.filter(this, text, unfiltered, search);
+            Optional<Component> newtext = filter.filter(this, text, unfiltered, search);
             if (newtext.isPresent()) {
                 text = StyleFormatter.formatText(newtext.get());
                 if (color != null) {

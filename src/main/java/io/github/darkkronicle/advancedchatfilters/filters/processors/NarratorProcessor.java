@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.function.Supplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class NarratorProcessor implements IMatchProcessor, IScreenSupplier, IJsonApplier {
@@ -73,7 +73,7 @@ public class NarratorProcessor implements IMatchProcessor, IScreenSupplier, IJso
                     new ConfigString(translate("message"), "$1", translate("info.message")));
 
     @Override
-    public Result processMatches(Text text, Text unfiltered, SearchResult search) {
+    public Result processMatches(Component text, Component unfiltered, SearchResult search) {
         String content = search.getGroupReplacements(message.config.getStringValue(), 0);
         Narrator.getNarrator().say(content, false, 1.0F);
         return Result.getFromBool(true);
@@ -105,9 +105,9 @@ public class NarratorProcessor implements IMatchProcessor, IScreenSupplier, IJso
         private GuiTextFieldGeneric textField;
 
         @Override
-        public void close() {
+        public void onClose() {
             save();
-            super.close();
+            super.onClose();
         }
 
         public SenderScreen(Screen parent) {
@@ -122,7 +122,7 @@ public class NarratorProcessor implements IMatchProcessor, IScreenSupplier, IJso
         }
 
         public void save() {
-            message.config.setValueFromString(textField.getText());
+            message.config.setValueFromString(textField.getValue());
         }
 
         private int getWidth() {
@@ -143,9 +143,9 @@ public class NarratorProcessor implements IMatchProcessor, IScreenSupplier, IJso
             y += this.addLabel(x, y, message.config) + 1;
             textField =
                     new GuiTextFieldGeneric(
-                            x, y, getWidth(), 20, MinecraftClient.getInstance().textRenderer);
+                            x, y, getWidth(), 20, Minecraft.getInstance().font);
             textField.setMaxLength(64000);
-            textField.setText(message.config.getStringValue());
+            textField.setValue(message.config.getStringValue());
             this.addTextField(textField, null);
         }
 

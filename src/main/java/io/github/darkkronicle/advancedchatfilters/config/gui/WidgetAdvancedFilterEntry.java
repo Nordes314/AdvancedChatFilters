@@ -30,10 +30,10 @@ import java.util.Collections;
 import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 
 @Environment(EnvType.CLIENT)
 public class WidgetAdvancedFilterEntry extends WidgetListEntryBase<ScriptFilter> {
@@ -62,8 +62,8 @@ public class WidgetAdvancedFilterEntry extends WidgetListEntryBase<ScriptFilter>
 
         int pos = x + width - 2;
         WidgetIntBox num =
-                new WidgetIntBox(pos - 40, y, 40, 20, MinecraftClient.getInstance().textRenderer);
-        num.setText(filter.getOrder().toString());
+                new WidgetIntBox(pos - 40, y, 40, 20, Minecraft.getInstance().font);
+        num.setValue(filter.getOrder().toString());
         num.setApply(
                 () -> {
                     Integer order = num.getInt();
@@ -213,7 +213,7 @@ public class WidgetAdvancedFilterEntry extends WidgetListEntryBase<ScriptFilter>
     }
 
     @Override
-    protected boolean onKeyTypedImpl(KeyInput input) {
+    protected boolean onKeyTypedImpl(KeyEvent input) {
         if (this.num != null && this.num.isFocused()) {
             if (input.key() == KeyCodes.KEY_ENTER) {
                 this.num.textField().getApply().run();
@@ -227,7 +227,7 @@ public class WidgetAdvancedFilterEntry extends WidgetListEntryBase<ScriptFilter>
     }
 
     @Override
-    protected boolean onCharTypedImpl(CharInput input) {
+    protected boolean onCharTypedImpl(CharacterEvent input) {
         if (this.num != null && this.num.onCharTyped(input)) {
             return true;
         }
@@ -236,7 +236,7 @@ public class WidgetAdvancedFilterEntry extends WidgetListEntryBase<ScriptFilter>
     }
 
     @Override
-    protected boolean onMouseClickedImpl(Click click, boolean doubled) {
+    protected boolean onMouseClickedImpl(MouseButtonEvent click, boolean doubled) {
         if (super.onMouseClickedImpl(click, doubled)) {
             return true;
         }

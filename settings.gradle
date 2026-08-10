@@ -1,10 +1,15 @@
 pluginManagement {
 	repositories {
-		mavenCentral()
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
 		gradlePluginPortal()
+		mavenCentral()
 	}
+}
+
+// Lets Gradle download a JDK 25 toolchain automatically, so no system JDK 25 is required.
+plugins {
+	id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }

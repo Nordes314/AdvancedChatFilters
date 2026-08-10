@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
 import lombok.Data;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -247,16 +247,16 @@ public class Filter implements Comparable<Filter> {
 
     public enum NotifySound implements IConfigOptionListEntry {
         NONE("none", null),
-        ARROW_HIT_PLAYER("arrow_hit_player", SoundEvents.ENTITY_ARROW_HIT_PLAYER),
-        ANVIL_BREAK("anvil_break", SoundEvents.BLOCK_ANVIL_BREAK),
-        BEACON_ACTIVATE("beacon_activate", SoundEvents.BLOCK_BEACON_ACTIVATE),
-        ELDER_GUARDIAN_CURSE("elder_guardian_curse", SoundEvents.ENTITY_ELDER_GUARDIAN_CURSE),
-        ENDERMAN_TELEPORT("enderman_teleport", SoundEvents.ENTITY_ENDERMAN_TELEPORT),
-        WOLOLO("wololo", SoundEvents.ENTITY_EVOKER_PREPARE_WOLOLO),
-        BELL("bell_use", SoundEvents.BLOCK_BELL_USE),
+        ARROW_HIT_PLAYER("arrow_hit_player", SoundEvents.ARROW_HIT_PLAYER),
+        ANVIL_BREAK("anvil_break", SoundEvents.ANVIL_BREAK),
+        BEACON_ACTIVATE("beacon_activate", SoundEvents.BEACON_ACTIVATE),
+        ELDER_GUARDIAN_CURSE("elder_guardian_curse", SoundEvents.ELDER_GUARDIAN_CURSE),
+        ENDERMAN_TELEPORT("enderman_teleport", SoundEvents.ENDERMAN_TELEPORT),
+        WOLOLO("wololo", SoundEvents.EVOKER_PREPARE_WOLOLO),
+        BELL("bell_use", SoundEvents.BELL_BLOCK),
         CLICK("button_click", SoundEvents.UI_BUTTON_CLICK.value()),
-        HUSK_TO_ZOMBIE("husk_to_zombie", SoundEvents.ENTITY_HUSK_CONVERTED_TO_ZOMBIE),
-        GLASS_BREAK("glass_break", SoundEvents.BLOCK_GLASS_BREAK);
+        HUSK_TO_ZOMBIE("husk_to_zombie", SoundEvents.HUSK_CONVERTED_TO_ZOMBIE),
+        GLASS_BREAK("glass_break", SoundEvents.GLASS_BREAK);
 
         public final String configString;
         public final SoundEvent event;
@@ -307,7 +307,7 @@ public class Filter implements Comparable<Filter> {
                     continue;
                 }
                 if (r.event
-                        .id()
+                        .location()
                         .getPath()
                         .replaceAll("\\.", "_")
                         .toLowerCase()

@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 
 public class WidgetListAdvancedFilters
         extends WidgetListBase<ScriptFilter, WidgetAdvancedFilterEntry> {
@@ -50,7 +50,7 @@ public class WidgetListAdvancedFilters
     }
 
     @Override
-    public boolean onMouseClicked(Click click, boolean doubled) {
+    public boolean onMouseClicked(MouseButtonEvent click, boolean doubled) {
         clearTextFieldFocus();
         return super.onMouseClicked(click, doubled);
     }
@@ -67,7 +67,7 @@ public class WidgetListAdvancedFilters
     }
 
     @Override
-    public boolean onKeyTyped(KeyInput input) {
+    public boolean onKeyTyped(KeyEvent input) {
         for (WidgetAdvancedFilterEntry widget : this.listWidgets) {
             if (widget.onKeyTyped(input)) {
                 return true;

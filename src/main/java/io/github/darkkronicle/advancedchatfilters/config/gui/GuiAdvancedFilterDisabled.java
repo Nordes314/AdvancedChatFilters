@@ -16,28 +16,28 @@ import io.github.darkkronicle.advancedchatcore.util.Colors;
 import io.github.darkkronicle.advancedchatcore.util.StyleFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
 
 public class GuiAdvancedFilterDisabled extends GuiBase {
 
-    private final List<OrderedText> warning;
+    private final List<FormattedCharSequence> warning;
 
     public GuiAdvancedFilterDisabled(Screen parent) {
         this.title = StringUtils.translate("advancedchatfilters.screen.warning");
         setParent(parent);
-        MutableText text = Text.literal(StringUtils.translate("advancedchatfilters.warning.advancedfilters"));
+        MutableComponent text = Component.literal(StringUtils.translate("advancedchatfilters.warning.advancedfilters"));
         warning = new ArrayList<>();
-        MinecraftClient client = MinecraftClient.getInstance();
-        int width = client.getWindow().getScaledWidth();
-        for (Text t :
+        Minecraft client = Minecraft.getInstance();
+        int width = minecraft.getWindow().getGuiScaledWidth();
+        for (Component t :
                 StyleFormatter.wrapText(
-                        client.textRenderer, width - 100, StyleFormatter.formatText(text))) {
-            warning.add(t.asOrderedText());
+                        minecraft.font, width - 100, StyleFormatter.formatText(text))) {
+            warning.add(t.getVisualOrderText());
         }
     }
 
@@ -60,18 +60,18 @@ public class GuiAdvancedFilterDisabled extends GuiBase {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-        super.render(context, mouseX, mouseY, partialTicks);
-        int width = client.getWindow().getScaledWidth();
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(context, mouseX, mouseY, partialTicks);
+        int width = minecraft.getWindow().getGuiScaledWidth();
         int y = 100;
-        for (OrderedText warn : warning) {
-            context.drawCenteredTextWithShadow(
-                    client.textRenderer,
+        for (FormattedCharSequence warn : warning) {
+            context.centeredText(
+                    minecraft.font,
                     warn,
                     width / 2,
                     y,
                     Colors.getInstance().getColorOrWhite("white").color());
-            y += client.textRenderer.fontHeight + 2;
+            y += minecraft.font.lineHeight + 2;
         }
     }
 

@@ -24,9 +24,9 @@ import java.util.concurrent.Executors;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class ScriptManager implements IMessageFilter {
@@ -49,9 +49,9 @@ public class ScriptManager implements IMessageFilter {
 
     private void setupEngine() {
         engine = NashornSandboxes.create();
-        // Restrict classes. Text is used for filters.
-        engine.allow(Text.class);
-        engine.allow(MutableText.class);
+        // Restrict classes. Component is used for filters.
+        engine.allow(Component.class);
+        engine.allow(MutableComponent.class);
         engine.allow(Style.class);
 
         // Ensure no massive memory leaks. Stuff really shouldn't take over a second to happen
@@ -147,7 +147,7 @@ public class ScriptManager implements IMessageFilter {
     }
 
     @Override
-    public Optional<Text> filter(Text text) {
+    public Optional<Component> filter(Component text) {
         if (!FiltersConfigStorage.ADVANCED_ON.config.getBooleanValue()) {
             // Do ***not*** evaluate any code unless this is turned on.
             return Optional.empty();
