@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Optional;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class OnlyMatchTextReplace implements IMatchReplace {
@@ -33,7 +33,7 @@ public class OnlyMatchTextReplace implements IMatchReplace {
     }
 
     @Override
-    public Optional<Text> filter(ReplaceFilter filter, Text text, SearchResult search) {
+    public Optional<Component> filter(ReplaceFilter filter, Component text, SearchResult search) {
         HashMap<StringMatch, StringInsert> toReplace = new HashMap<>();
         for (StringMatch m : search.getMatches()) {
             if (filter.color == null) {
@@ -46,19 +46,19 @@ public class OnlyMatchTextReplace implements IMatchReplace {
         return Optional.of(text);
     }
 
-    public static StringInsert getReplacement(ReplaceFilter filter, Text text, SearchResult result) {
+    public static StringInsert getReplacement(ReplaceFilter filter, Component text, SearchResult result) {
         return (current, match) -> formatMessage(current, filter, text, result, match);
     }
 
-    public static MutableText formatMessage(Text current, ReplaceFilter filter, Text text, SearchResult result, StringMatch match) {
+    public static MutableComponent formatMessage(Component current, ReplaceFilter filter, Component text, SearchResult result, StringMatch match) {
         ParseContext context = FiltersHandler.getInstance().createFilterContext(filter, text, result, match);
         String message = filter.replaceTo.parse(context).getContent().getString();
         message = result.getGroupReplacements(message, getMatchIndex(result, match));
-        return Text.literal(message).fillStyle(current.getStyle());
+        return Component.literal(message).withStyle(current.getStyle());
     }
 
-    private static StringInsert getReplacement(ReplaceFilter filter, Text text, SearchResult result, Color color) {
-        return (current, match) -> formatMessage(Text.empty().setStyle(Style.EMPTY.withColor(color.color())), filter, text, result, match);
+    private static StringInsert getReplacement(ReplaceFilter filter, Component text, SearchResult result, Color color) {
+        return (current, match) -> formatMessage(Component.empty().setStyle(Style.EMPTY.withColor(color.color())), filter, text, result, match);
     }
 
 }

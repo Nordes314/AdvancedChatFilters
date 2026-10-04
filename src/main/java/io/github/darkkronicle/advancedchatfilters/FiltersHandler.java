@@ -32,7 +32,7 @@ import io.github.darkkronicle.advancedchatfilters.filters.processors.*;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class FiltersHandler implements IMessageFilter {
@@ -43,7 +43,7 @@ public class FiltersHandler implements IMessageFilter {
      * The "Terminate" text. It has a length of zero and is non-null so it will stop the process if
      * returned by the main filter.
      */
-    public static final Text TERMINATE = Text.empty();
+    public static final Component TERMINATE = Component.empty();
 
     private FiltersHandler() {}
 
@@ -59,8 +59,8 @@ public class FiltersHandler implements IMessageFilter {
     private NodeProcessor processor;
 
     @Override
-    public Optional<Text> filter(Text text) {
-        Text unfiltered = text;
+    public Optional<Component> filter(Component text) {
+        Component unfiltered = text;
 
         Color backgroundColor = null;
         // Filter text
@@ -144,7 +144,7 @@ public class FiltersHandler implements IMessageFilter {
         return filt;
     }
 
-    public ParseContext createFilterContext(ReplaceFilter filter, Text text, SearchResult result, StringMatch match) {
+    public ParseContext createFilterContext(ReplaceFilter filter, Component text, SearchResult result, StringMatch match) {
         ParseContext context = processor.createContext();
         context.addLocalVariable("input", Variable.of(text.getString()));
         context.addLocalVariable("match", Variable.of(new StringMatchObject(match)));
@@ -158,7 +158,7 @@ public class FiltersHandler implements IMessageFilter {
         return context;
     }
 
-    public ParseContext createTextContext(Text text, SearchResult search) {
+    public ParseContext createTextContext(Component text, SearchResult search) {
         ParseContext context = processor.createContext();
         context.addLocalVariable("input", Variable.of(text.getString()));
         List<KonstructObject<?>> list = new ArrayList<>();

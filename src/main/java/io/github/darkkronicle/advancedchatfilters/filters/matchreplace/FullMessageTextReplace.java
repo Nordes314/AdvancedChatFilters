@@ -15,24 +15,24 @@ import io.github.darkkronicle.advancedchatfilters.interfaces.IMatchReplace;
 import java.util.Optional;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 
 @Environment(EnvType.CLIENT)
 public class FullMessageTextReplace implements IMatchReplace {
 
     @Override
-    public Optional<Text> filter(ReplaceFilter filter, Text text, SearchResult search) {
+    public Optional<Component> filter(ReplaceFilter filter, Component text, SearchResult search) {
         StringBuilder totalMatch = new StringBuilder();
         for (StringMatch m : search.getMatches()) {
             totalMatch.append(m.match);
         }
-        MutableText base = Text.literal("");
+        MutableComponent base = Component.literal("");
         Color c = filter.color;
         if (c == null) {
-            base.fillStyle(text.getStyle());
+            base.withStyle(text.getStyle());
         } else {
             Style original = Style.EMPTY;
             TextColor textColor = TextColor.fromRgb(c.color());

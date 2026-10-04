@@ -43,13 +43,13 @@ import java.util.List;
 import java.util.function.Supplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class SoundProcessor implements IMatchProcessor, IJsonApplier, IScreenSupplier {
@@ -81,9 +81,9 @@ public class SoundProcessor implements IMatchProcessor, IJsonApplier, IScreenSup
                 volume = (float) ((IntegerObject) r3.getContent()).getValue();
             }
 
-            MinecraftClient.getInstance()
+            Minecraft.getInstance()
                     .getSoundManager()
-                    .play(PositionedSoundInstance.ui(event, volume, pitch));
+                    .play(SimpleSoundInstance.forUI(event, volume, pitch));
             return io.github.darkkronicle.Konstruct.parser.Result.success(new NullObject());
         }
 
@@ -94,7 +94,7 @@ public class SoundProcessor implements IMatchProcessor, IJsonApplier, IScreenSup
     }
 
     public static SoundEvent getEvent(String name) {
-        return SoundEvent.of(Identifier.of(name));
+        return SoundEvent.createVariableRangeEvent(Identifier.parse(name));
     }
 
     /* How the filter notifies the client of a found string.
@@ -129,12 +129,12 @@ public class SoundProcessor implements IMatchProcessor, IJsonApplier, IScreenSup
                             translate("soundvolume"), 1, 0.5, 3, translate("info.soundvolume")));
 
     @Override
-    public Result processMatches(Text text, Text unfiltered, SearchResult search) {
+    public Result processMatches(Component text, Component unfiltered, SearchResult search) {
         if (getSound() != Filter.NotifySound.NONE) {
-            MinecraftClient.getInstance()
+            Minecraft.getInstance()
                     .getSoundManager()
                     .play(
-                            PositionedSoundInstance.ui(
+                            SimpleSoundInstance.forUI(
                                     getSound().event,
                                     (float) soundVolume.config.getDoubleValue(),
                                     (float) soundPitch.config.getDoubleValue()));
@@ -173,9 +173,9 @@ public class SoundProcessor implements IMatchProcessor, IJsonApplier, IScreenSup
         private final WidgetDropDownList<Filter.NotifySound> widgetDropDown;
 
         @Override
-        public void close() {
+        public void onClose() {
             save();
-            super.close();
+            super.onClose();
         }
 
         public SoundScreen(Screen parent) {

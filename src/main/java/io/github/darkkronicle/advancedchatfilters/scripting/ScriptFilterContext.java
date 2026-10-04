@@ -17,22 +17,22 @@ import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class ScriptFilterContext {
 
-    @Getter @Setter private Text text;
+    @Getter @Setter private Component text;
 
-    private final Text unfiltered;
+    private final Component unfiltered;
 
     public static FindType toFindType(String type) {
         return FindType.fromFindType(type.toLowerCase());
     }
 
-    public ScriptFilterContext(Text text) {
+    public ScriptFilterContext(Component text) {
         this.text = text;
         this.unfiltered = text;
     }
@@ -84,10 +84,10 @@ public class ScriptFilterContext {
     /**
      * Set's the text. No formatting, just raw string data.
      *
-     * @param text Text to set it to.
+     * @param text Component to set it to.
      */
     public void setTextPlain(String text) {
-        this.text = Text.literal(text);
+        this.text = Component.literal(text);
     }
 
     /**
@@ -100,7 +100,7 @@ public class ScriptFilterContext {
     public void replaceTextWithString(int start, int end, String replace) {
         HashMap<StringMatch, StringInsert> toReplace = new HashMap<>();
         StringMatch match = new StringMatch(getString().substring(start, end), start, end);
-        toReplace.put(match, (current, match1) -> Text.literal(replace).setStyle(current.getStyle()));
+        toReplace.put(match, (current, match1) -> Component.literal(replace).setStyle(current.getStyle()));
         text = TextUtil.replaceStrings(text, toReplace);
     }
 
@@ -111,7 +111,7 @@ public class ScriptFilterContext {
      * @param end End position to replace
      * @param replace What to replace to. {@link FluidText}
      */
-    public void replaceTextWithText(int start, int end, MutableText replace) {
+    public void replaceTextWithText(int start, int end, MutableComponent replace) {
         HashMap<StringMatch, StringInsert> toReplace = new HashMap<>();
         StringMatch match = new StringMatch(getString().substring(start, end), start, end);
         toReplace.put(match, (current, match1) -> replace);
@@ -123,7 +123,7 @@ public class ScriptFilterContext {
      *
      * @param processor Processor name in {@link MatchProcessorRegistry}
      */
-    public void sendToProcessor(String processor, Text text) {
+    public void sendToProcessor(String processor, Component text) {
         for (MatchProcessorRegistry.MatchProcessorOption option :
                 MatchProcessorRegistry.getInstance().getAll()) {
             if (option.getSaveString().equals(processor)) {
@@ -188,6 +188,6 @@ public class ScriptFilterContext {
         if (style.getColor() == null) {
             return null;
         }
-        return new Color(style.getColor().getRgb());
+        return new Color(style.getColor().getValue());
     }
 }

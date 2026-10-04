@@ -17,8 +17,8 @@ import io.github.darkkronicle.advancedchatcore.interfaces.IMatchProcessor;
 import io.github.darkkronicle.advancedchatcore.util.SearchResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
@@ -35,8 +35,8 @@ public class ActionBarProcessor implements IMatchProcessor {
         @Override
         public io.github.darkkronicle.Konstruct.parser.Result parse(ParseContext context, List<Node> input) {
             io.github.darkkronicle.Konstruct.parser.Result r1 = Function.parseArgument(context, input, 0);
-            Text text = Text.literal(r1.getContent().getString());
-            MinecraftClient.getInstance().player.sendMessage(text, true);
+            Component text = Component.literal(r1.getContent().getString());
+            Minecraft.getInstance().player.sendOverlayMessage(text);
             return io.github.darkkronicle.Konstruct.parser.Result.success(new NullObject());
         }
 
@@ -47,12 +47,12 @@ public class ActionBarProcessor implements IMatchProcessor {
     }
 
     @Override
-    public Result processMatches(Text text, Text unfiltered, SearchResult matches) {
-        MinecraftClient client = MinecraftClient.getInstance();
+    public Result processMatches(Component text, Component unfiltered, SearchResult matches) {
+        Minecraft client = Minecraft.getInstance();
         if (client.player == null) {
             return Result.PROCESSED;
         }
-        client.player.sendMessage(text, true);
+        client.player.sendOverlayMessage(text);
         return Result.PROCESSED;
     }
 }

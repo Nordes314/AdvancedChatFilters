@@ -15,7 +15,7 @@ import io.github.darkkronicle.advancedchatfilters.registry.MatchProcessorRegistr
 import java.util.Optional;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class ForwardFilter implements IFilter {
@@ -27,7 +27,7 @@ public class ForwardFilter implements IFilter {
     }
 
     @Override
-    public Optional<Text> filter(ParentFilter filter, Text text, Text unfiltered, SearchResult search) {
+    public Optional<Component> filter(ParentFilter filter, Component text, Component unfiltered, SearchResult search) {
         IMatchProcessor.Result result = null;
         for (MatchProcessorRegistry.MatchProcessorOption p : registry.getAll()) {
             if (!p.isActive()) {

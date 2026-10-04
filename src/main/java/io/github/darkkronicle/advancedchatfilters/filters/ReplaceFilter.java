@@ -19,10 +19,10 @@ import io.github.darkkronicle.advancedchatfilters.interfaces.IMatchReplace;
 import java.util.Optional;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.Level;
 
-/** Filter used for replacing matches in a Text */
+/** Filter used for replacing matches in a Component */
 @Environment(EnvType.CLIENT)
 public class ReplaceFilter implements IFilter {
 
@@ -44,7 +44,7 @@ public class ReplaceFilter implements IFilter {
     }
 
     @Override
-    public Optional<Text> filter(ParentFilter filter, Text text, Text unfiltered, SearchResult search) {
+    public Optional<Component> filter(ParentFilter filter, Component text, Component unfiltered, SearchResult search) {
         // Grabs FluidText for easy mutability.
         if (type == null) {
             return Optional.empty();

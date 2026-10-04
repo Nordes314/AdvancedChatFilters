@@ -16,7 +16,7 @@ import io.github.darkkronicle.Konstruct.type.NullObject;
 import io.github.darkkronicle.advancedchatcore.chat.ChatHistoryProcessor;
 import io.github.darkkronicle.advancedchatcore.interfaces.IMatchProcessor;
 import io.github.darkkronicle.advancedchatcore.util.SearchResult;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class ForwardProcessor implements IMatchProcessor {
         @Override
         public io.github.darkkronicle.Konstruct.parser.Result parse(ParseContext context, List<Node> input) {
             io.github.darkkronicle.Konstruct.parser.Result r1 = Function.parseArgument(context, input, 0);
-            Text text = Text.literal(r1.getContent().getString());
+            Component text = Component.literal(r1.getContent().getString());
             new ChatHistoryProcessor().process(text, text);
             return io.github.darkkronicle.Konstruct.parser.Result.success(new NullObject());
         }
@@ -44,7 +44,7 @@ public class ForwardProcessor implements IMatchProcessor {
     }
 
     @Override
-    public Result processMatches(Text text, Text unfiltered, SearchResult search) {
+    public Result processMatches(Component text, Component unfiltered, SearchResult search) {
         return Result.FORCE_FORWARD;
     }
 }

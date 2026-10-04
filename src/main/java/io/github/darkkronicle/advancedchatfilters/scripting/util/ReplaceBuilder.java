@@ -15,8 +15,8 @@ import java.util.Map;
 import io.github.darkkronicle.advancedchatcore.util.TextUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class ReplaceBuilder {
@@ -28,11 +28,11 @@ public class ReplaceBuilder {
     /**
      * Applies replacements to a {@link FluidText}
      *
-     * @param filter Text to apply it to
+     * @param filter Component to apply it to
      * @return Filtered {@link FluidText}
      */
-    public Text build(Text filter) {
-        Text text = filter.copy();
+    public Component build(Component filter) {
+        Component text = filter.copy();
         text = TextUtil.replaceStrings(text, replacements);
         return text;
     }
@@ -47,7 +47,7 @@ public class ReplaceBuilder {
      */
     public ReplaceBuilder addReplacement(StringMatch match, String replacement) {
         replacements.put(
-                match, (current, match1) -> Text.literal(replacement).setStyle(current.getStyle()));
+                match, (current, match1) -> Component.literal(replacement).setStyle(current.getStyle()));
         return this;
     }
 
@@ -55,10 +55,10 @@ public class ReplaceBuilder {
      * Add's a replacement to trigger on build.
      *
      * @param match {@link StringMatch} match data
-     * @param text Text to replace to
+     * @param text Component to replace to
      */
-    public ReplaceBuilder addReplacement(StringMatch match, Text text) {
-        replacements.put(match, (current, match1) -> (MutableText) text);
+    public ReplaceBuilder addReplacement(StringMatch match, Component text) {
+        replacements.put(match, (current, match1) -> (MutableComponent) text);
         return this;
     }
 }
